@@ -5,6 +5,8 @@ import qiskit
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit import execute
 
+from qiskit.extensions.standard.x import x as gate_x
+
 qiskit.IBMQ.load_accounts()
 backend = qiskit.providers.ibmq.least_busy(qiskit.IBMQ.backends(simulator=True))
 shots = 100
@@ -12,9 +14,17 @@ shots = 100
 
 def get_desired_state():
     # des_states = {'0', '1', '+x', '-x'}
-    possible_desired = ['0', '1']
-    selection = randint(0, len(possible_desired))
-    return possible_desired[selection]
+    states = ['0', '1']
+    selection = randint(0, len(states) - 1)
+
+    return states[selection]
+
+
+def get_random_gate():
+    import qiskit.extensions.standard as gates
+    gates = [gates.x, gates.y, gates.z, gates.iden]
+    selection = randint(0, len(gates) - 1)
+    return gates[selection]
 
 
 def check(desierd_state, user_circut, qr, cr):
@@ -29,7 +39,7 @@ def check(desierd_state, user_circut, qr, cr):
     circuit.measure(qr, cr)
     job = execute(circuit, backend=backend, shots=shots)
     res = job.result().get_counts()
-
+    print(res)
     if desierd_state in res:
         return res[desierd_state] / shots
     else:
@@ -38,19 +48,19 @@ def check(desierd_state, user_circut, qr, cr):
 
 q = QuantumRegister(1)  # |0>
 c = ClassicalRegister(1)
+circuit = QuantumCircuit(q, c)
 
 desired_state = get_desired_state()
 print("Desired state is: " + desired_state)
 
-exit(0)
-# user interaction 1
-circuit = QuantumCircuit(q, c)
-circuit.x(q)
-print(check('1', circuit, q, c))
-print(check('0', circuit, q, c))
+p = 0.0
+while p < 0.9:
+    rgate = [get_random_gate(), get_random_gate()]
+    gateno = int(input("Select gate [1: " + rgate[0].__name__
+                       + "] or [2: " + rgate[1].__name__ + "] > "))
 
-# user interaction 2
-circuit = QuantumCircuit(q, c)
-circuit.h(q)
-print(check('+x', circuit, q, c))
-print(check('0', circuit, q, c))
+    rgate[gateno - 1](circuit, q)
+    p = check(desired_state, circuit, q, c)
+    print("Probabilaty for desired state is: " + str(p))
+
+print("Success")
