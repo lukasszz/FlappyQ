@@ -1,5 +1,5 @@
 from copy import deepcopy
-from random import randint
+from random import randint, shuffle
 
 import qiskit
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
@@ -15,16 +15,16 @@ shots = 100
 def get_desired_state():
     # des_states = {'0', '1', '+x', '-x'}
     states = ['0', '1']
-    selection = randint(0, len(states) - 1)
+    shuffle(states)
 
-    return states[selection]
+    return states[0]
 
 
-def get_random_gate():
+def get_random_gates():
     import qiskit.extensions.standard as gates
     gates = [gates.x, gates.y, gates.z, gates.iden]
-    selection = randint(0, len(gates) - 1)
-    return gates[selection]
+    shuffle(gates)
+    return gates[0], gates[1]
 
 
 def check(desierd_state, user_circut, qr, cr):
@@ -55,11 +55,11 @@ print("Desired state is: " + desired_state)
 
 p = 0.0
 while p < 0.9:
-    rgate = [get_random_gate(), get_random_gate()]
-    gateno = int(input("Select gate [1: " + rgate[0].__name__
-                       + "] or [2: " + rgate[1].__name__ + "] > "))
+    rgates = get_random_gates()
+    gateno = int(input("Select gate [1: " + rgates[0].__name__
+                       + "] or [2: " + rgates[1].__name__ + "] > "))
 
-    rgate[gateno - 1](circuit, q)
+    rgates[gateno - 1](circuit, q)
     p = check(desired_state, circuit, q, c)
     print("Probabilaty for desired state is: " + str(p))
 
