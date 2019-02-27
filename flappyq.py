@@ -1,4 +1,5 @@
 from copy import deepcopy
+from random import randint
 
 import qiskit
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
@@ -8,7 +9,12 @@ qiskit.IBMQ.load_accounts()
 backend = qiskit.providers.ibmq.least_busy(qiskit.IBMQ.backends(simulator=True))
 shots = 100
 
-des_states = {'0', '1', '+x', '-x'}
+
+def get_desired_state():
+    # des_states = {'0', '1', '+x', '-x'}
+    possible_desired = ['0', '1']
+    selection = randint(0, len(possible_desired))
+    return possible_desired[selection]
 
 
 def check(desierd_state, user_circut, qr, cr):
@@ -33,6 +39,10 @@ def check(desierd_state, user_circut, qr, cr):
 q = QuantumRegister(1)  # |0>
 c = ClassicalRegister(1)
 
+desired_state = get_desired_state()
+print("Desired state is: " + desired_state)
+
+exit(0)
 # user interaction 1
 circuit = QuantumCircuit(q, c)
 circuit.x(q)
