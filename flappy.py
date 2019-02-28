@@ -259,6 +259,10 @@ def mainGame(movementInfo):
     desired_state = get_desired_state(LEVEL)
     print("Desired state is: " + desired_state)
     rgates = get_random_gates(LEVEL)
+    
+    # define gate labels
+    firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
+    secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
 
     while True:
         for event in pygame.event.get():
@@ -302,6 +306,8 @@ def mainGame(movementInfo):
                     p = check(desired_state, circuit, q, c)
                     print("Probabilaty for desired state is: " + str(p))
                     rgates = get_random_gates(LEVEL)
+                    firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
+                    secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
 
                 score += 1
                 SOUNDS['point'].play()
@@ -361,7 +367,8 @@ def mainGame(movementInfo):
                 
                 # create a text suface object, 
                 # on which text is drawn on it. 
-                text = font.render('Q', True, white) 
+                upperText = font.render(firstGateLabel, True, white) 
+                lowerText = font.render(secondGateLabel, True, white) 
                 
                 # create a rectangular object for the 
                 # text surface object 
