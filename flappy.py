@@ -46,6 +46,12 @@ PLAYERS_LIST = (
         'assets/sprites/yellowbird-midflap.png',
         'assets/sprites/yellowbird-downflap.png',
     ),
+    # cat
+    (
+        'assets/sprites/cat-upflap1.png',
+        'assets/sprites/cat-midflap1.png',
+        'assets/sprites/cat-downflap2.png', 
+    )
 )
 
 # list of backgrounds
@@ -127,10 +133,14 @@ def main():
 
         # select random player sprites
         randPlayer = random.randint(0, len(PLAYERS_LIST) - 1)
+        catPlayer = 3
         IMAGES['player'] = (
-            pygame.image.load(PLAYERS_LIST[randPlayer][0]).convert_alpha(),
-            pygame.image.load(PLAYERS_LIST[randPlayer][1]).convert_alpha(),
-            pygame.image.load(PLAYERS_LIST[randPlayer][2]).convert_alpha(),
+            pygame.image.load(PLAYERS_LIST[3][0]).convert_alpha(),
+            pygame.image.load(PLAYERS_LIST[3][1]).convert_alpha(),
+            pygame.image.load(PLAYERS_LIST[3][2]).convert_alpha(),
+            #pygame.image.load(PLAYERS_LIST[3][3]).convert_alpha(),
+            #pygame.image.load(PLAYERS_LIST[3][4]).convert_alpha(),
+            #pygame.image.load(PLAYERS_LIST[3][5]).convert_alpha(),
         )
 
         # select random pipe sprites
@@ -160,6 +170,9 @@ def main():
             getHitmask(IMAGES['player'][0]),
             getHitmask(IMAGES['player'][1]),
             getHitmask(IMAGES['player'][2]),
+            #getHitmask(IMAGES['player'][3]),
+            #getHitmask(IMAGES['player'][4]),
+            #getHitmask(IMAGES['player'][5]),
         )
 
         movementInfo = showWelcomeAnimation()
