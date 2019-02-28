@@ -97,6 +97,9 @@ def main():
     IMAGES['message'] = pygame.image.load('assets/sprites/message.png').convert_alpha()
     # base (ground) sprite
     IMAGES['base'] = pygame.image.load('assets/sprites/base-wide.png').convert_alpha()
+    # boundary sprite
+    IMAGES['boundary'] = pygame.image.load('assets/sprites/boundary.png').convert_alpha()
+
 
     # sounds
     if 'win' in sys.platform:
@@ -376,6 +379,8 @@ def mainGame(movementInfo):
                     playerx < upperPipes[1]['x'])): # compare against player x pos as well
                     SCREEN.blit(upperText, (uPipe['x'] + 10, uPipe['y'] + 250)) # upper pipe label
                     SCREEN.blit(lowerText, (lPipe['x'] + 10, lPipe['y'] + 25)) # lower pipe label
+                    # boundary line gets drawn here
+                    SCREEN.blit(IMAGES['boundary'], (uPipe['x'], uPipe['y'] + 420)) # draw boundary
             else:
                 SCREEN.blit(IMAGES['pipe'][0], (uPipe['x'], uPipe['y']))
                 SCREEN.blit(IMAGES['pipe'][1], (lPipe['x'], lPipe['y']))
