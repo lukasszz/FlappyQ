@@ -1,10 +1,14 @@
 from copy import deepcopy
 from random import randint, shuffle
+import numpy as np
+import matplotlib
 
 import qiskit
 from qiskit import Aer
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit import execute
+
+from qiskit.tools.visualization import plot_bloch_multivector, plot_bloch_vector
 
 import qiskit.extensions.standard as gates
 
@@ -49,6 +53,27 @@ def check(desierd_state, user_circut, qr, cr):
     else:
         return 0
 
+def getGoalBlochs(state):
+    #translate strings to state vectors
+    print("calling get goal blochs")
+    if state == '00':
+        psi = np.array([1,0,0,0])
+        return plot_bloch_multivector(psi, title="Goal Qubits")
+
+    elif state == '01':
+        psi = np.array([0,1,0,0])
+        return plot_bloch_multivector(psi, title="Goal Qubits")
+
+    elif state == '10':
+        psi = np.array([0,0,1,0])
+        return plot_bloch_multivector(psi, title="Goal Qubits")
+
+    else:
+        psi = np.array([0,0,0,1])
+        return plot_bloch_multivector(psi, title="Goal Qubits")
+
+def getCurrentBlochs(psi):
+        return plot_bloch_multivector(psi, title="Current Qubits")
 
 if '__main__' == __name__:
     LEVEL = 2
@@ -57,6 +82,9 @@ if '__main__' == __name__:
     circuit = QuantumCircuit(q, c)
 
     desired_state = get_desired_state(LEVEL)
+    goal_blochs = getGoalBlochs(desired_state)
+    goal_blochs.savefig("sphere.png")
+    goal_blochs.show()
     print("Desired state is: " + desired_state)
 
     p = 0.0
