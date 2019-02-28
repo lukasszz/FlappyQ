@@ -2,6 +2,7 @@ from copy import deepcopy
 from random import randint, shuffle
 
 import qiskit
+from qiskit import Aer
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit import execute
 
@@ -12,7 +13,7 @@ levels = {1: {'qubits': 1, 'states': ['0', '1'], 'gates': [gates.x, gates.y, gat
               'gates': [gates.x, gates.y, gates.z, gates.iden, gates.h]}}
 
 qiskit.IBMQ.load_accounts()
-backend = qiskit.providers.ibmq.least_busy(qiskit.IBMQ.backends(simulator=True))
+backend = Aer.get_backend('qasm_simulator')
 shots = 100
 
 
