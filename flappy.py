@@ -7,7 +7,7 @@ from pygame.locals import *
 
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 
-from flappyq import get_random_gates, get_desired_state, check, levels
+from flappyq import get_random_gates, get_desired_state, check, levels, getGoalBlochs
 
 FPS = 30
 SCREENWIDTH  = 576
@@ -266,6 +266,12 @@ def mainGame(movementInfo):
 
     desired_state = get_desired_state(LEVEL)
     print("Desired state is: " + desired_state)
+    goal_blochs = getGoalBlochs(desired_state)
+    goal_blochs.savefig("desierd_sphere.png")
+
+    cblochs = getGoalBlochs(''.zfill(levels[LEVEL]['qubits']))
+    cblochs.savefig("current_sphere.png")
+
     rgates = get_random_gates(LEVEL)
     
     # define gate labels
@@ -315,8 +321,11 @@ def mainGame(movementInfo):
                     print("Applying gate: " + gate.__name__ + " on " + str(target))
                     p, cstate = check(desired_state, circuit, q, c)
                     print("Probabilaty for desired state is: " + str(p))
-                    print("Current state: " + cstate)
+                    print("Current state: |" + cstate + ">")
                     circuit_str += gate.__name__ + str(target) + ' > '
+
+                    cblochs = getGoalBlochs(cstate)
+                    cblochs.savefig("current_sphere.png")
 
                     if p > 0.99:
                         return { 'score': p }

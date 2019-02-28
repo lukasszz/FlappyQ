@@ -67,8 +67,6 @@ def read_state(res):
 
 
 def getGoalBlochs(state):
-    #translate strings to state vectors
-    print("calling get goal blochs")
     if state == '00':
         psi = np.array([1,0,0,0])
         return plot_bloch_multivector(psi, title="Goal Qubits")
@@ -119,7 +117,7 @@ if '__main__' == __name__:
         gate(circuit, q[target])
         p, cstate = check(desired_state, circuit, q, c)
         print("Probabilaty for desired state is: " + str(p))
-        print("Current state: " + cstate)
+        print("Current state: |" + cstate + ">")
         cblochs = getGoalBlochs(cstate)
         cblochs.savefig("current_sphere.png")
     print("Success")
