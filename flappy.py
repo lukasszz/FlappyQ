@@ -5,10 +5,7 @@ import sys
 import pygame
 from pygame.locals import *
 
-import qiskit
-from qiskit import Aer
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
-from qiskit import execute
 
 from flappyq import get_random_gates, get_desired_state, check, levels
 
@@ -303,11 +300,17 @@ def mainGame(movementInfo):
                     gate = rgates[gateno - 1][0]
                     target = rgates[gateno - 1][1] - 1
                     gate(circuit, q[target])
+                    print("Applying gate: " + gate.__name__ + " on " + str(target))
                     p = check(desired_state, circuit, q, c)
                     print("Probabilaty for desired state is: " + str(p))
+                    if p > 0.99:
+                        break
+
+                    # Get new gates
                     rgates = get_random_gates(LEVEL)
                     firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
                     secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
+
 
                 score += 1
                 SOUNDS['point'].play()
