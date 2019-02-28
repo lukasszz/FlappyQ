@@ -55,9 +55,12 @@ BACKGROUNDS_LIST = (
 PIPES_LIST = (
     'assets/sprites/pipe-green.png',
     'assets/sprites/pipe-red.png',
-    'assets/sprites/pipe-purple.png',
 )
 
+# list of quantum pipes
+QUANTUM_PIPES_LIST = (
+    'assets/sprites/pipe-purple.png',
+)
 
 try:
     xrange
@@ -126,11 +129,19 @@ def main():
             pygame.image.load(PIPES_LIST[pipeindex]).convert_alpha(),
         )
 
+        IMAGES['quantum_pipe'] = (
+            pygame.transform.rotate(
+                pygame.image.load(QUANTUM_PIPES_LIST[0]).convert_alpha(), 180),
+                pygame.image.load(QUANTUM_PIPES_LIST[0]).convert_alpha(),
+        )
+
+
         # hismask for pipes
         HITMASKS['pipe'] = (
             getHitmask(IMAGES['pipe'][0]),
             getHitmask(IMAGES['pipe'][1]),
         )
+
 
         # hitmask for player
         HITMASKS['player'] = (
@@ -331,9 +342,13 @@ def mainGame(movementInfo):
         # draw sprites
         SCREEN.blit(IMAGES['background'], (0,0))
 
-        for uPipe, lPipe in zip(upperPipes, lowerPipes):
-            SCREEN.blit(IMAGES['pipe'][0], (uPipe['x'], uPipe['y']))
-            SCREEN.blit(IMAGES['pipe'][1], (lPipe['x'], lPipe['y']))
+        for uPipe, lPipe in zip(upperPipes, lowerPipes):    
+            if 'quantum' in uPipe.keys() and uPipe['quantum'] == True:
+                SCREEN.blit(IMAGES['quantum_pipe'][0], (uPipe['x'], uPipe['y']))
+                SCREEN.blit(IMAGES['quantum_pipe'][1], (lPipe['x'], lPipe['y']))
+            else:
+                SCREEN.blit(IMAGES['pipe'][0], (uPipe['x'], uPipe['y']))
+                SCREEN.blit(IMAGES['pipe'][1], (lPipe['x'], lPipe['y']))
 
         SCREEN.blit(IMAGES['base'], (basex, BASEY))        
         
@@ -441,10 +456,10 @@ def getRandomPipe(quantumGateStatus):
     gapY += int(BASEY * 0.2)
     pipeHeight = IMAGES['pipe'][0].get_height()
     pipeX = SCREENWIDTH + 25 # gap between pipes on the ground
-
+    qStatus = random.choice([True, False])
     return [
-        {'x': pipeX, 'y': gapY - pipeHeight, 'quantum': quantumGateStatus},  # upper pipe
-        {'x': pipeX, 'y': gapY + PIPEGAPSIZE, 'quantum': quantumGateStatus}, # lower pipe
+        {'x': pipeX, 'y': gapY - pipeHeight, 'quantum': qStatus},  # upper pipe
+        {'x': pipeX, 'y': gapY + PIPEGAPSIZE, 'quantum': qStatus}, # lower pipe
     ]
 
 
