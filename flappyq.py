@@ -7,7 +7,9 @@ from qiskit import execute
 
 import qiskit.extensions.standard as gates
 
-levels = {1: {'qubits': 1, 'states': ['0', '1'], 'gates': [gates.x, gates.y, gates.z, gates.iden]}}
+levels = {1: {'qubits': 1, 'states': ['0', '1'], 'gates': [gates.x, gates.y, gates.z, gates.iden]},
+          2: {'qubits': 2, 'states': ['00', '01', '10', '11'],
+              'gates': [gates.x, gates.y, gates.z, gates.iden, gates.h]}}
 
 qiskit.IBMQ.load_accounts()
 backend = qiskit.providers.ibmq.least_busy(qiskit.IBMQ.backends(simulator=True))
@@ -48,10 +50,11 @@ def check(desierd_state, user_circut, qr, cr):
 
 
 if '__main__' == __name__:
-    q = QuantumRegister(1)  # |0>
-    c = ClassicalRegister(1)
+    LEVEL = 2
+    q = QuantumRegister(levels[LEVEL]['qubits'])  # |0>
+    c = ClassicalRegister(levels[LEVEL]['qubits'])
     circuit = QuantumCircuit(q, c)
-    LEVEL = 1
+
     desired_state = get_desired_state(LEVEL)
     print("Desired state is: " + desired_state)
 
@@ -61,8 +64,9 @@ if '__main__' == __name__:
         gateno = int(input("Select gate [1: " + rgates[0][0].__name__
                            + str(rgates[0][1]) + "] or [2: "
                            + rgates[1][0].__name__ + str(rgates[0][1]) + "] > "))
-
-        rgates[gateno - 1][0](circuit, q[rgates[gateno - 1][1] - 1])
+        gate = rgates[gateno - 1][0]
+        target = rgates[gateno - 1][1] - 1
+        gate(circuit, q[target])
         p = check(desired_state, circuit, q, c)
         print("Probabilaty for desired state is: " + str(p))
 
