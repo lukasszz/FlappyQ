@@ -358,7 +358,7 @@ def mainGame(movementInfo):
         SCREEN.blit(IMAGES['background'], (0,0))
 
         for uPipe, lPipe in zip(upperPipes, lowerPipes):    
-            if 'quantum' in uPipe.keys() and uPipe['quantum'] == True and uPipe['x'] - playerx:
+            if 'quantum' in uPipe.keys() and uPipe['quantum'] == True:
                 SCREEN.blit(IMAGES['quantum_pipe'][0], (uPipe['x'], uPipe['y']))
                 SCREEN.blit(IMAGES['quantum_pipe'][1], (lPipe['x'], lPipe['y']))
                 
@@ -367,9 +367,12 @@ def mainGame(movementInfo):
                 
                 upperText = font.render(firstGateLabel, True, white) 
                 lowerText = font.render(secondGateLabel, True, white) 
-                
-                SCREEN.blit(upperText, (uPipe['x'] + 10, uPipe['y'] + 250)) # upper pipe label
-                SCREEN.blit(lowerText, (lPipe['x'] + 10, lPipe['y'] + 25)) # lower pipe label
+                if ((uPipe['x'] == upperPipes[0]['x'] and playerx < uPipe['x']) or \
+                    ('quantum' in upperPipes[1].keys() and upperPipes[1]['quantum'] == True and \
+                    'quantum' in upperPipes[0].keys() and upperPipes[0]['quantum'] == False and \
+                    playerx < upperPipes[1]['x'])): # compare against player x pos as well
+                    SCREEN.blit(upperText, (uPipe['x'] + 10, uPipe['y'] + 250)) # upper pipe label
+                    SCREEN.blit(lowerText, (lPipe['x'] + 10, lPipe['y'] + 25)) # lower pipe label
             else:
                 SCREEN.blit(IMAGES['pipe'][0], (uPipe['x'], uPipe['y']))
                 SCREEN.blit(IMAGES['pipe'][1], (lPipe['x'], lPipe['y']))
