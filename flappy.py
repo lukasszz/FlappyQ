@@ -19,6 +19,12 @@ BASEY        = SCREENHEIGHT * 0.79
 # image, sound and hitmask  dicts
 IMAGES, SOUNDS, HITMASKS = {}, {}, {}
 
+# define the RGB value for white, 
+#  green, blue colour . 
+white = (255, 255, 255) 
+green = (0, 255, 0) 
+blue = (0, 0, 128) 
+
 # list of all possible players (tuple of 3 positions of flap)
 PLAYERS_LIST = (
     # red bird
@@ -250,9 +256,10 @@ def mainGame(movementInfo):
     desired_state = get_desired_state(LEVEL)
     print("Desired state is: " + desired_state)
     rgates = get_random_gates(LEVEL)
-    print("gate [1: " + rgates[0][0].__name__
-          + str(rgates[0][1]) + "] or [2: "
-          + rgates[1][0].__name__ + str(rgates[0][1]) + "] > ")
+    
+    # define gate labels
+    firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
+    secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
 
     while True:
         for event in pygame.event.get():
@@ -301,10 +308,8 @@ def mainGame(movementInfo):
 
                     # Get new gates
                     rgates = get_random_gates(LEVEL)
-                    print("gate [1: " + rgates[0][0].__name__
-                           + str(rgates[0][1]) + "] or [2: "
-                           + rgates[1][0].__name__ + str(rgates[0][1]) + "] > ")
-
+                    firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
+                    secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
 
 
                 score += 1
@@ -352,9 +357,18 @@ def mainGame(movementInfo):
         SCREEN.blit(IMAGES['background'], (0,0))
 
         for uPipe, lPipe in zip(upperPipes, lowerPipes):    
-            if 'quantum' in uPipe.keys() and uPipe['quantum'] == True:
+            if 'quantum' in uPipe.keys() and uPipe['quantum'] == True and uPipe['x'] - playerx:
                 SCREEN.blit(IMAGES['quantum_pipe'][0], (uPipe['x'], uPipe['y']))
                 SCREEN.blit(IMAGES['quantum_pipe'][1], (lPipe['x'], lPipe['y']))
+                
+                # gate label text is written here
+                font = pygame.font.Font('freesansbold.ttf', 32) 
+                
+                upperText = font.render(firstGateLabel, True, white) 
+                lowerText = font.render(secondGateLabel, True, white) 
+                
+                SCREEN.blit(upperText, (uPipe['x'] + 10, uPipe['y'] + 250)) # upper pipe label
+                SCREEN.blit(lowerText, (lPipe['x'] + 10, lPipe['y'] + 25)) # lower pipe label
             else:
                 SCREEN.blit(IMAGES['pipe'][0], (uPipe['x'], uPipe['y']))
                 SCREEN.blit(IMAGES['pipe'][1], (lPipe['x'], lPipe['y']))
