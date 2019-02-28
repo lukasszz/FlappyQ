@@ -279,11 +279,11 @@ def mainGame(movementInfo):
 
     desired_state = get_desired_state(LEVEL)
     print("Desired state is: " + desired_state)
-    goal_blochs = getGoalBlochs(desired_state)
-    goal_blochs.savefig("desierd_sphere.png")
+    # goal_blochs = getGoalBlochs(desired_state)
+    # goal_blochs.savefig("desierd_sphere.png")
 
-    cblochs = getGoalBlochs(''.zfill(levels[LEVEL]['qubits']))
-    cblochs.savefig("current_sphere.png")
+    # cblochs = getGoalBlochs(''.zfill(levels[LEVEL]['qubits']))
+    # cblochs.savefig("current_sphere.png")
 
     rgates = get_random_gates(LEVEL)
     
@@ -337,8 +337,8 @@ def mainGame(movementInfo):
                     print("Current state: |" + cstate + ">")
                     circuit_str += gate.__name__ + str(target) + ' > '
 
-                    cblochs = getGoalBlochs(cstate)
-                    cblochs.savefig("current_sphere.png")
+                    # cblochs = getGoalBlochs(cstate)
+                    # cblochs.savefig("current_sphere.png")
 
                     if p > 0.99:
                         return { 'score': p }
