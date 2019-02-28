@@ -71,10 +71,11 @@ except NameError:
 
 
 def main():
-    global SCREEN, FPSCLOCK
+    global SCREEN, FPSCLOCK, LEVEL
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+    LEVEL = 1
     pygame.display.set_caption('Flappy Q')
 
     # numbers sprites for score display
@@ -114,6 +115,7 @@ def main():
     SOUNDS['wing']   = pygame.mixer.Sound('assets/audio/wing' + soundExt)
 
     while True:
+        print("level: {}".format(LEVEL))
         # select random background sprites
         randBg = random.randint(0, len(BACKGROUNDS_LIST) - 1)
         IMAGES['background'] = pygame.image.load(BACKGROUNDS_LIST[randBg]).convert()
@@ -156,8 +158,9 @@ def main():
         )
 
         movementInfo = showWelcomeAnimation()
+
         crashInfo = mainGame(movementInfo)
-        showGameOverScreen(crashInfo)
+        LEVEL = showGameOverScreen(crashInfo)
 
 
 def showWelcomeAnimation():
@@ -251,7 +254,7 @@ def mainGame(movementInfo):
     playerFlapAcc =  -9   # players speed on flapping
     playerFlapped = False # True when player flaps
 
-    LEVEL = 1
+    # LEVEL = 1
     q = QuantumRegister(levels[LEVEL]['qubits'])  # |0>
     c = ClassicalRegister(levels[LEVEL]['qubits'])
     circuit = QuantumCircuit(q, c)
@@ -263,7 +266,7 @@ def mainGame(movementInfo):
     # define gate labels
     firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
     secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
-    cstate = '|00>'
+    cstate = '|'+''.zfill(levels[LEVEL]['qubits'])+'>'
     circuit_str = ''
     while True:
         for event in pygame.event.get():
@@ -310,8 +313,8 @@ def mainGame(movementInfo):
                     print("Current state: " + cstate)
                     circuit_str += gate.__name__ + str(target) + ' > '
 
-                    # if p > 0.99:
-                    #     break
+                    if p > 0.99:
+                        return { 'score': p }
 
                     # Get new gates
                     rgates = get_random_gates(LEVEL)
@@ -419,6 +422,10 @@ def checkGateChoice(uPipe, lPipe, pHeight):
 def showGameOverScreen(crashInfo):
     """crashes the player down ans shows gameover image"""
     score = crashInfo['score']
+    if score >= .99:
+        print(score)
+        return 2
+
     playerx = SCREENWIDTH * 0.2
     playery = crashInfo['y']
     playerHeight = IMAGES['player'][0].get_height()
@@ -443,7 +450,7 @@ def showGameOverScreen(crashInfo):
                 sys.exit()
             if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
                 if playery + playerHeight >= BASEY - 1:
-                    return
+                    return 1
 
         # player y shift
         if playery + playerHeight < BASEY - 1:
