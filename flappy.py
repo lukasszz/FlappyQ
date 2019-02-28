@@ -260,7 +260,7 @@ def mainGame(movementInfo):
     # define gate labels
     firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
     secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
-
+    cstate = '|00>'
     while True:
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -301,8 +301,9 @@ def mainGame(movementInfo):
                     target = rgates[gateno - 1][1] - 1
                     gate(circuit, q[target])
                     print("Applying gate: " + gate.__name__ + " on " + str(target))
-                    p = check(desired_state, circuit, q, c)
+                    p, cstate = check(desired_state, circuit, q, c)
                     print("Probabilaty for desired state is: " + str(p))
+                    print("Current state: " + cstate)
                     if p > 0.99:
                         break
 
@@ -377,6 +378,8 @@ def mainGame(movementInfo):
         
         # print score so player overlaps the score
         showScore(score)
+        showState(cstate, desired_state)
+
 
         # Player rotation has a threshold
         visibleRot = playerRotThr
@@ -486,6 +489,16 @@ def getRandomPipe(quantumGateStatus):
     ]
 
 
+def showState(current_state, desired_state):
+    font = pygame.font.Font('freesansbold.ttf', 22)
+    Xoffset = (SCREENWIDTH - 50 ) / 2
+
+    text = font.render(current_state + " current", True, (20, 20, 20))
+    SCREEN.blit(text, (Xoffset, SCREENHEIGHT * 0.95))
+
+    text = font.render('|%s> desired' % desired_state, True, (20, 20, 20))
+    SCREEN.blit(text, (Xoffset, SCREENHEIGHT * 0.85))
+
 def showScore(score):
     """displays score in center of screen"""
     scoreDigits = [int(x) for x in list(str(score))]
@@ -497,7 +510,7 @@ def showScore(score):
     Xoffset = (SCREENWIDTH - totalWidth) / 2
 
     for digit in scoreDigits:
-        SCREEN.blit(IMAGES['numbers'][digit], (Xoffset, SCREENHEIGHT * 0.1))
+        #SCREEN.blit(IMAGES['numbers'][digit], (Xoffset, SCREENHEIGHT * 0.1))
         Xoffset += IMAGES['numbers'][digit].get_width()
 
 

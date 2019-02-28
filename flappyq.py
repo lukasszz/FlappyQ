@@ -12,7 +12,7 @@ levels = {1: {'qubits': 1, 'states': ['0', '1'], 'gates': [gates.x, gates.y, gat
           2: {'qubits': 2, 'states': ['00', '01', '10', '11'],
               'gates': [gates.x, gates.y, gates.z, gates.iden, gates.h]}}
 
-#qiskit.IBMQ.load_accounts()
+# qiskit.IBMQ.load_accounts()
 backend = Aer.get_backend('qasm_simulator')
 shots = 100
 
@@ -44,13 +44,28 @@ def check(desierd_state, user_circut, qr, cr):
     job = execute(circuit, backend=backend, shots=shots)
     res = job.result().get_counts()
     print(res)
+
     if desierd_state in res:
-        return res[desierd_state] / shots
+        return res[desierd_state] / shots, read_state(res)
     else:
-        return 0
+        return 0, read_state(res)
+
+
+def read_state(res):
+    if 1 == len(res):
+        return '|' + list(res.keys())[0] + '>'
+
+    keys = list(res.keys())
+    out = keys[0]
+    for k in keys:
+        for i in range(len(k)):
+            if out[i] != k[i]:
+                out = out[:i] + '?' + out[i + 1:]
+    return '|' + out + '>'
 
 
 if '__main__' == __name__:
+
     LEVEL = 2
     q = QuantumRegister(levels[LEVEL]['qubits'])  # |0>
     c = ClassicalRegister(levels[LEVEL]['qubits'])
@@ -68,7 +83,8 @@ if '__main__' == __name__:
         gate = rgates[gateno - 1][0]
         target = rgates[gateno - 1][1] - 1
         gate(circuit, q[target])
-        p = check(desired_state, circuit, q, c)
+        p, cstate = check(desired_state, circuit, q, c)
         print("Probabilaty for desired state is: " + str(p))
+        print("Current state: " + cstate)
 
     print("Success")
