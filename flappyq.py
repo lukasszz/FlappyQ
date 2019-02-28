@@ -5,26 +5,27 @@ import qiskit
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit import execute
 
-from qiskit.extensions.standard.x import x as gate_x
+import qiskit.extensions.standard as gates
+
+levels = {1: {'qubits': 1, 'states': ['0', '1'], 'gates': [gates.x, gates.y, gates.z, gates.iden]}}
 
 qiskit.IBMQ.load_accounts()
 backend = qiskit.providers.ibmq.least_busy(qiskit.IBMQ.backends(simulator=True))
 shots = 100
 
 
-def get_desired_state():
-    # des_states = {'0', '1', '+x', '-x'}
-    states = ['0', '1']
+def get_desired_state(level):
+    states = levels[level]['states']
     shuffle(states)
 
     return states[0]
 
 
-def get_random_gates():
-    import qiskit.extensions.standard as gates
-    gates = [gates.x, gates.y, gates.z, gates.iden]
+def get_random_gates(level):
+    gates = levels[level]['gates']
     shuffle(gates)
-    return gates[0], gates[1]
+    target = randint(1, levels[level]['qubits'])
+    return (gates[0], target), (gates[1], target)
 
 
 def check(desierd_state, user_circut, qr, cr):
@@ -46,21 +47,23 @@ def check(desierd_state, user_circut, qr, cr):
         return 0
 
 
-q = QuantumRegister(1)  # |0>
-c = ClassicalRegister(1)
-circuit = QuantumCircuit(q, c)
+if '__main__' == __name__:
+    q = QuantumRegister(1)  # |0>
+    c = ClassicalRegister(1)
+    circuit = QuantumCircuit(q, c)
+    LEVEL = 1
+    desired_state = get_desired_state(LEVEL)
+    print("Desired state is: " + desired_state)
 
-desired_state = get_desired_state()
-print("Desired state is: " + desired_state)
+    p = 0.0
+    while p < 0.9:
+        rgates = get_random_gates(LEVEL)
+        gateno = int(input("Select gate [1: " + rgates[0][0].__name__
+                           + str(rgates[0][1]) + "] or [2: "
+                           + rgates[1][0].__name__ + str(rgates[0][1]) + "] > "))
 
-p = 0.0
-while p < 0.9:
-    rgates = get_random_gates()
-    gateno = int(input("Select gate [1: " + rgates[0].__name__
-                       + "] or [2: " + rgates[1].__name__ + "] > "))
+        rgates[gateno - 1][0](circuit, q[rgates[gateno - 1][1] - 1])
+        p = check(desired_state, circuit, q, c)
+        print("Probabilaty for desired state is: " + str(p))
 
-    rgates[gateno - 1](circuit, q)
-    p = check(desired_state, circuit, q, c)
-    print("Probabilaty for desired state is: " + str(p))
-
-print("Success")
+    print("Success")
