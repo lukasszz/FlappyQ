@@ -263,7 +263,7 @@ def mainGame(movementInfo):
     # define gate labels
     firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
     secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
-    cstate = '|00>'
+    cstate = '|'+''.zfill(levels[LEVEL]['qubits'])+'>'
     circuit_str = ''
     while True:
         for event in pygame.event.get():
