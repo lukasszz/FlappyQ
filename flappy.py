@@ -248,7 +248,7 @@ def mainGame(movementInfo):
     playerFlapAcc =  -9   # players speed on flapping
     playerFlapped = False # True when player flaps
 
-    LEVEL = 2
+    LEVEL = 1
     q = QuantumRegister(levels[LEVEL]['qubits'])  # |0>
     c = ClassicalRegister(levels[LEVEL]['qubits'])
     circuit = QuantumCircuit(q, c)
@@ -261,6 +261,7 @@ def mainGame(movementInfo):
     firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
     secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
     cstate = '|00>'
+    circuit_str = ''
     while True:
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -297,15 +298,17 @@ def mainGame(movementInfo):
                 if 'quantum' in pipe.keys() and pipe['quantum'] == True:
                     gateno = checkGateChoice(upperPipes[0], lowerPipes[0], playery)
 
-                    gate = rgates[gateno - 1][0]
-                    target = rgates[gateno - 1][1] - 1
-                    gate(circuit, q[target])
+                    gate = rgates[gateno][0]
+                    target = rgates[gateno][1]
+                    gate(circuit, q[target - 1])
                     print("Applying gate: " + gate.__name__ + " on " + str(target))
                     p, cstate = check(desired_state, circuit, q, c)
                     print("Probabilaty for desired state is: " + str(p))
                     print("Current state: " + cstate)
-                    if p > 0.99:
-                        break
+                    circuit_str += gate.__name__ + str(target) + ' > '
+
+                    # if p > 0.99:
+                    #     break
 
                     # Get new gates
                     rgates = get_random_gates(LEVEL)
@@ -381,7 +384,7 @@ def mainGame(movementInfo):
         
         # print score so player overlaps the score
         showScore(score)
-        showState(cstate, desired_state)
+        showState(cstate, desired_state, circuit_str)
 
 
         # Player rotation has a threshold
@@ -492,15 +495,18 @@ def getRandomPipe(quantumGateStatus):
     ]
 
 
-def showState(current_state, desired_state):
+def showState(current_state, desired_state, circuit_str):
     font = pygame.font.Font('freesansbold.ttf', 22)
     Xoffset = (SCREENWIDTH - 50 ) / 2
 
     text = font.render(current_state + " current", True, (20, 20, 20))
-    SCREEN.blit(text, (Xoffset, SCREENHEIGHT * 0.95))
+    SCREEN.blit(text, (Xoffset, SCREENHEIGHT * 0.90))
 
     text = font.render('|%s> desired' % desired_state, True, (20, 20, 20))
     SCREEN.blit(text, (Xoffset, SCREENHEIGHT * 0.85))
+
+    text = font.render(circuit_str, True, (20, 20, 20))
+    SCREEN.blit(text, (5, SCREENHEIGHT * 0.95))
 
 def showScore(score):
     """displays score in center of screen"""
