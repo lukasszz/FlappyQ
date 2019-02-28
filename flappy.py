@@ -427,8 +427,12 @@ def checkGateChoice(uPipe, lPipe, pHeight):
 def showGameOverScreen(crashInfo):
     """crashes the player down ans shows gameover image"""
     score = crashInfo['score']
-    if score >= .99 and LEVEL == 1:
-        SCREEN.blit(IMAGES['level1'], (0,0))
+    print(crashInfo)
+    if score >= .99 and 'groundCrash' not in crashInfo.keys():
+        if LEVEL == 1:
+            SCREEN.blit(IMAGES['level1'], (0,0))
+        elif LEVEL == 2:
+            SCREEN.blit(IMAGES['level2'], (0,0))
         pygame.display.update()
         while True:
             for event in pygame.event.get():
