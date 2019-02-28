@@ -250,6 +250,9 @@ def mainGame(movementInfo):
     desired_state = get_desired_state(LEVEL)
     print("Desired state is: " + desired_state)
     rgates = get_random_gates(LEVEL)
+    print("gate [1: " + rgates[0][0].__name__
+          + str(rgates[0][1]) + "] or [2: "
+          + rgates[1][0].__name__ + str(rgates[0][1]) + "] > ")
 
     while True:
         for event in pygame.event.get():
@@ -293,7 +296,16 @@ def mainGame(movementInfo):
                     print("Applying gate: " + gate.__name__ + " on " + str(target))
                     p = check(desired_state, circuit, q, c)
                     print("Probabilaty for desired state is: " + str(p))
+                    if p > 0.99:
+                        break
+
+                    # Get new gates
                     rgates = get_random_gates(LEVEL)
+                    print("gate [1: " + rgates[0][0].__name__
+                           + str(rgates[0][1]) + "] or [2: "
+                           + rgates[1][0].__name__ + str(rgates[0][1]) + "] > ")
+
+
 
                 score += 1
                 SOUNDS['point'].play()
