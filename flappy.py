@@ -354,30 +354,18 @@ def mainGame(movementInfo):
         SCREEN.blit(IMAGES['background'], (0,0))
 
         for uPipe, lPipe in zip(upperPipes, lowerPipes):    
-            if 'quantum' in uPipe.keys() and uPipe['quantum'] == True:
+            if 'quantum' in uPipe.keys() and uPipe['quantum'] == True and uPipe['x'] - playerx:
                 SCREEN.blit(IMAGES['quantum_pipe'][0], (uPipe['x'], uPipe['y']))
                 SCREEN.blit(IMAGES['quantum_pipe'][1], (lPipe['x'], lPipe['y']))
-                # write the text here
                 
-                # create a font object. 
-                # 1st parameter is the font file 
-                # which is present in pygame. 
-                # 2nd parameter is size of the font 
+                # gate label text is written here
                 font = pygame.font.Font('freesansbold.ttf', 32) 
                 
-                # create a text suface object, 
-                # on which text is drawn on it. 
                 upperText = font.render(firstGateLabel, True, white) 
                 lowerText = font.render(secondGateLabel, True, white) 
                 
-                # create a rectangular object for the 
-                # text surface object 
-                textRect = text.get_rect()  
-                
-                # set the center of the rectangular object. 
-                # textRect.center = (uPipe['y'], uPipe['x']) 
-                SCREEN.blit(text, (uPipe['x'] + 10, uPipe['y'] + 250)) # upper pipe label
-                SCREEN.blit(text, (lPipe['x'] + 10, lPipe['y'] - 250)) # lower pipe label
+                SCREEN.blit(upperText, (uPipe['x'] + 10, uPipe['y'] + 250)) # upper pipe label
+                SCREEN.blit(lowerText, (lPipe['x'] + 10, lPipe['y'] + 25)) # lower pipe label
             else:
                 SCREEN.blit(IMAGES['pipe'][0], (uPipe['x'], uPipe['y']))
                 SCREEN.blit(IMAGES['pipe'][1], (lPipe['x'], lPipe['y']))
