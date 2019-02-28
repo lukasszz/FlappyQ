@@ -13,7 +13,7 @@ from qiskit import execute
 from flappyq import get_random_gates, get_desired_state, check, levels
 
 FPS = 30
-SCREENWIDTH  = 288
+SCREENWIDTH  = 576
 SCREENHEIGHT = 512
 # amount by which base can maximum shift to left
 PIPEGAPSIZE  = 200 # gap between upper and lower part of pipe
@@ -47,8 +47,7 @@ PLAYERS_LIST = (
 
 # list of backgrounds
 BACKGROUNDS_LIST = (
-    'assets/sprites/background-day.png',
-    'assets/sprites/background-night.png',
+    'assets/sprites/background-night-wide.png',
 )
 
 # list of pipes
@@ -94,7 +93,7 @@ def main():
     # message sprite for welcome screen
     IMAGES['message'] = pygame.image.load('assets/sprites/message.png').convert_alpha()
     # base (ground) sprite
-    IMAGES['base'] = pygame.image.load('assets/sprites/base.png').convert_alpha()
+    IMAGES['base'] = pygame.image.load('assets/sprites/base-wide.png').convert_alpha()
 
     # sounds
     if 'win' in sys.platform:

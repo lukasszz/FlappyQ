@@ -12,7 +12,7 @@ levels = {1: {'qubits': 1, 'states': ['0', '1'], 'gates': [gates.x, gates.y, gat
           2: {'qubits': 2, 'states': ['00', '01', '10', '11'],
               'gates': [gates.x, gates.y, gates.z, gates.iden, gates.h]}}
 
-qiskit.IBMQ.load_accounts()
+#qiskit.IBMQ.load_accounts()
 backend = Aer.get_backend('qasm_simulator')
 shots = 100
 
