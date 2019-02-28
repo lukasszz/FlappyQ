@@ -5,6 +5,12 @@ import sys
 import pygame
 from pygame.locals import *
 
+import qiskit
+from qiskit import Aer
+from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+from qiskit import execute
+
+from flappyq import get_random_gates, get_desired_state, check, levels
 
 FPS = 30
 SCREENWIDTH  = 288
@@ -192,7 +198,7 @@ def showWelcomeAnimation():
 
 
 def mainGame(movementInfo):
-    quantumGateStatus = False # set dynamically based on a new measurement
+    quantumGateStatus = True # set dynamically based on a new measurement
     score = playerIndex = loopIter = 0
     playerIndexGen = movementInfo['playerIndexGen']
     playerx, playery = int(SCREENWIDTH * 0.2), movementInfo['playery']
@@ -229,6 +235,14 @@ def mainGame(movementInfo):
     playerFlapAcc =  -9   # players speed on flapping
     playerFlapped = False # True when player flaps
 
+    LEVEL = 2
+    q = QuantumRegister(levels[LEVEL]['qubits'])  # |0>
+    c = ClassicalRegister(levels[LEVEL]['qubits'])
+    circuit = QuantumCircuit(q, c)
+
+    desired_state = get_desired_state(LEVEL)
+    print("Desired state is: " + desired_state)
+    rgates = get_random_gates(LEVEL)
 
     while True:
         for event in pygame.event.get():
@@ -264,8 +278,15 @@ def mainGame(movementInfo):
                 
                 # NOTE: adding a check here for gate choice
                 if 'quantum' in pipe.keys() and pipe['quantum'] == True:
-                    checkGateChoice(upperPipes[0], lowerPipes[0], playery)
-                
+                    gateno = checkGateChoice(upperPipes[0], lowerPipes[0], playery)
+
+                    gate = rgates[gateno - 1][0]
+                    target = rgates[gateno - 1][1] - 1
+                    gate(circuit, q[target])
+                    p = check(desired_state, circuit, q, c)
+                    print("Probabilaty for desired state is: " + str(p))
+                    rgates = get_random_gates(LEVEL)
+
                 score += 1
                 SOUNDS['point'].play()
 
@@ -337,8 +358,10 @@ def checkGateChoice(uPipe, lPipe, pHeight):
     # print("lower pipe: {}".format(lPipe['y']))
     if (uPipe['y'] + PIPEHEIGHT + (PIPEGAPSIZE / 2) > pHeight):
         print('top gate')
+        return 0
     else:
         print('bottom gate')
+        return 1
 
 
 def showGameOverScreen(crashInfo):
