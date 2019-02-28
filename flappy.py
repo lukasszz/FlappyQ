@@ -100,6 +100,11 @@ def main():
     IMAGES['base'] = pygame.image.load('assets/sprites/base-wide.png').convert_alpha()
     # boundary sprite
     IMAGES['boundary'] = pygame.image.load('assets/sprites/boundary.png').convert_alpha()
+    # level 1 screen
+    IMAGES['level1'] = pygame.image.load('assets/sprites/select.png').convert_alpha()
+    # level 2 screen
+    IMAGES['level2'] = pygame.image.load('assets/sprites/restart2.png').convert_alpha()
+    
 
 
     # sounds
@@ -422,9 +427,13 @@ def checkGateChoice(uPipe, lPipe, pHeight):
 def showGameOverScreen(crashInfo):
     """crashes the player down ans shows gameover image"""
     score = crashInfo['score']
-    if score >= .99:
-        print(score)
-        return 2
+    if score >= .99 and LEVEL == 1:
+        SCREEN.blit(IMAGES['level1'], (0,0))
+        pygame.display.update()
+        while True:
+            for event in pygame.event.get():
+                if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
+                    return 2
 
     playerx = SCREENWIDTH * 0.2
     playery = crashInfo['y']
