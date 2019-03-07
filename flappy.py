@@ -290,7 +290,7 @@ def mainGame(movementInfo):
     # define gate labels
     firstGateLabel = rgates[0][0].__name__ + str(rgates[0][1])
     secondGateLabel = rgates[1][0].__name__ + str(rgates[1][1])
-    cstate = '|'+''.zfill(levels[LEVEL]['qubits'])+'>'
+    cstate = ''.zfill(levels[LEVEL]['qubits'])
     circuit_str = ''
     while True:
         for event in pygame.event.get():
@@ -546,7 +546,7 @@ def showState(current_state, desired_state, circuit_str):
     font = pygame.font.Font('freesansbold.ttf', 22)
     Xoffset = (SCREENWIDTH - 50 ) / 2
 
-    text = font.render(current_state + " current", True, (20, 20, 20))
+    text = font.render('|%s> current' % current_state, True, (20, 20, 20))
     SCREEN.blit(text, (Xoffset, SCREENHEIGHT * 0.90))
 
     text = font.render('|%s> desired' % desired_state, True, (20, 20, 20))
